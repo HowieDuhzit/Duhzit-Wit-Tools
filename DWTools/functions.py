@@ -8,7 +8,6 @@ import random
 import json
 from math import radians
 from io import BytesIO
-from PIL import Image
 
 def mix2vrm(context):
     bpy.ops.object.editmode_toggle()
