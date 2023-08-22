@@ -13,8 +13,10 @@ ADDED:
 
 -Rig Convertor
   - Convert rig between mixamo and VRM
+  - 
 -ProPoser Custom Props
   - Add custom properties to the armature for each bone rotaion in degrees for manual tweaking
+  - 
 -AI LoRA Genorator
   -Load LoRa_Gen_Scene.blend
   -Load VRM into avatar collection
@@ -25,8 +27,11 @@ ADDED:
   -Render LoRA Data
   -Load Kohya (https://github.com/bmaltais/kohya_ss)
   -Train LoRa
+
 -Object Array Tool
   -Make Arrays of objects similar to the array modifier but seperate objects
+  
 -Batch GLB to VRM conversion
   -Looks for .glbs in sequence(0.glb, 1.glb, 2.glb) in the same folder as the current .blend file and trys to procedurely convert them to VRM(May be buggy)
+  
 -Social and Support links
