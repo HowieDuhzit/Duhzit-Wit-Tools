@@ -26,7 +26,7 @@ v0.1.5 - New UI and combined usage update!
   - Select the armature
   - Render LoRA Data
   - Load Kohya (https://github.com/bmaltais/kohya_ss)
-  - Train LoRa
+  - Train LoRa (https://hackmd.io/@reneil1337/avatar-lora#3-Start-the-LoRA-Training-inside-Kohya)
 
 ### Object Array Tool
   - Make Arrays of objects similar to the array modifier but seperate objects
