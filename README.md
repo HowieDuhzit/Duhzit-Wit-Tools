@@ -1,3 +1,5 @@
+![blender_t5aCTShlkR](https://github.com/HowieDuhzit/Duhzit-Wit-Tools/assets/127010826/2e8be8b5-3161-4e12-bb93-b4e9109c7b34)
+
 # Duhzit Wit Tools
 Collection of miscellaneous tools for miscellaneous purposes.
 
