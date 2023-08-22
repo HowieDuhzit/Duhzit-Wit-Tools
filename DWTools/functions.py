@@ -5,9 +5,10 @@ import subprocess
 import sys
 import os
 import random
+import json
 from math import radians
-#from . import ui
 from io import BytesIO
+from PIL import Image
 
 def mix2vrm(context):
     bpy.ops.object.editmode_toggle()
@@ -297,7 +298,7 @@ def lora(context):
             bone.rotation_euler.x = radians(random_rotation_x)
             bone.rotation_euler.y = radians(random_rotation_y)
             bone.rotation_euler.z = radians(random_rotation_z)
-                    
+ 
         bpy.ops.render.render(use_viewport=True)    
         bpy.data.images['Render Result'].save_render(str(context.scene.out_path)+"/image/100_"+str(context.scene.lora_name)+"/"+f"{formatted_num}-0-" + str(index) + ".png")
         filename = str(str(context.scene.out_path)+"/image/100_"+str(context.scene.lora_name)+"/"+f"{formatted_num}-0-" + str(index) + ".txt")
@@ -374,32 +375,4 @@ def create_custom_properties_with_drivers():
     else:
         print("Please select an armature object.")
     bpy.ops.object.mode_set(mode='OBJECT')
-
-def check_nft_ownership(wallet_address, contract_address, token_id):
-    # Connect to an Ethereum node
-    w3 = Web3(Web3.HTTPProvider('YOUR_ETHEREUM_NODE_URL'))
-
-    # Load the NFT contract's ABI (Application Binary Interface)
-    with open('nft_contract_abi.json') as f:  # Replace with the actual ABI file
-        contract_abi = json.load(f)
-
-    # Load the contract
-    nft_contract = w3.eth.contract(address=contract_address, abi=contract_abi)
-
-    # Call the balanceOf function to check token ownership
-    owner_balance = nft_contract.functions.balanceOf(wallet_address).call()
-
-    # Check if the wallet address owns the specified token
-    return owner_balance > 0
-
-def owned():
-    wallet_address = '0xYourWalletAddress'  # Replace with the user's wallet address
-    contract_address = '0xCONTRACT_ADDRESS'  # Replace with the NFT contract address
-    token_id = YOUR_TOKEN_ID  # Replace with the specific token ID
-
-    owns_token = check_nft_ownership(wallet_address, contract_address, token_id)
-
-    if owns_token:
-        print("The user owns the specified NFT token.")
-    else:
-        print("The user does not own the specified NFT token.")
+    

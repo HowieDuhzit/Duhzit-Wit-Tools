@@ -24,7 +24,6 @@ else:
     from .functions import *
     from .operators import *
     from .menu import *
-
 import bpy
 import time
 import requests
@@ -41,7 +40,6 @@ from bpy.types import (
     AddonPreferences,
     PropertyGroup,
     )
-from .type_annotations import SMCIcons
 
 python_exe = os.path.join(sys.prefix, 'bin', 'python.exe')
 target = os.path.join(sys.prefix, 'lib', 'site-packages')
@@ -52,29 +50,14 @@ try:
 
     pil_exist = True
 except ImportError:
-    pil_exist = False
-    
+    pil_exist = False    
 if pil_exist:
     print("PIL Already Installed")
 else:
     subprocess.call([python_exe, '-m', 'ensurepip'])
     subprocess.call([python_exe, '-m', 'pip', 'install', '--upgrade', 'pip'])
     subprocess.call([python_exe, '-m', 'pip', 'install', '--upgrade', 'pillow', '-t', target])
-
-try:
-    from web3 import Web3
-
-    web3_exist = True
-except ImportError:
-    web3_exist = False
-    
-if web3_exist:
-    print("WEB3 Already Installed")
-else:
-    subprocess.call([python_exe, '-m', 'pip', 'install', '--upgrade', 'web3', '-t', target])
-
 from PIL import Image
-from web3 import Web3
 
 def register():
     for (prop_name, prop_value) in PROPS:
