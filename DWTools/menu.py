@@ -25,7 +25,7 @@ class RIGToolsPanel(bpy.types.Panel):
     bl_idname = "OG_PT_RIG_tools"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI' if is_blender_2_80_or_newer else 'TOOLS'
-    bl_category = "OG Tools"
+    bl_category = "DWTOOLS"
 
     def draw(self, context):
         scene = context.scene
@@ -55,7 +55,7 @@ class AIToolsPanel(bpy.types.Panel):
     bl_idname = "OG_PT_AI_tools"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI' if is_blender_2_80_or_newer else 'TOOLS'
-    bl_category = "OG Tools"
+    bl_category = "DWTOOLS"
 
     def draw(self, context):
         scene = context.scene
@@ -78,7 +78,6 @@ class AIToolsPanel(bpy.types.Panel):
         boxcol.prop(scene, "pic_amount")
         row = boxcol.row()
         row.operator("lora.ren")
-        
 
 class OBJToolsPanel(bpy.types.Panel):
     """Creates a Panel in the scene context of the properties editor"""
@@ -86,7 +85,7 @@ class OBJToolsPanel(bpy.types.Panel):
     bl_idname = "OG_PT_OBJ_tools"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI' if is_blender_2_80_or_newer else 'TOOLS'
-    bl_category = "OG Tools"
+    bl_category = "DWTOOLS"
 
     def draw(self, context):
         scene = context.scene
@@ -111,7 +110,7 @@ class CONToolsPanel(bpy.types.Panel):
     bl_idname = "OG_PT_Convert_tools"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI' if is_blender_2_80_or_newer else 'TOOLS'
-    bl_category = "OG Tools"
+    bl_category = "DWTOOLS"
 
     def draw(self, context):
         scene = context.scene
@@ -137,7 +136,7 @@ class CreditsMenu(bpy.types.Panel):
     bl_idname = 'OG_PT_Credits_Menu'
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI' if is_blender_2_80_or_newer else 'TOOLS'
-    bl_category = 'OG Tools'
+    bl_category = 'DWTOOLS'
 
     def draw(self, context):
         github = 'https://github.com/HowieDuhzit'
@@ -149,15 +148,6 @@ class CreditsMenu(bpy.types.Panel):
         box = m_col.box()
         col = box.column()
         col.scale_y = 1.2
-        col.label(text='Duhzit With Tools {0}'.format(bl_info['version']))
-        row = box.row(align=True)
-        row.scale_y = 1.2
-        row.alignment = 'LEFT'
-        row.label(text='Created by:')
-        row.label(text='Howie Duhzit')
-        col = box.column(align=True)
-        col.scale_y = 1.2
-        col.label(text='If you have found a bug:')
         col.operator('smc.browser', text='Contact me on Discord (@HowieDuhzit)').link = discord
         col.operator('smc.browser', text='Report a Bug on GitHub').link = github
         col.separator()
