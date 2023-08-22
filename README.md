@@ -14,7 +14,7 @@ v0.1.5 - New UI and combined usage update!
   - Convert rig between mixamo and VRM
     
 ### ProPoser Custom Props
-  - Add custom properties to the armature for each bone rotaion in degrees for manual tweaking
+  - Add custom properties to the armature for each bone rotation in degrees for manual tweaking
 
 ### AI LoRA Genorator
   - Load LoRa_Gen_Scene.blend (https://github.com/HowieDuhzit/Duhzit-Wit-Tools/blob/main/LoRA_Gen_Scene.blend)
