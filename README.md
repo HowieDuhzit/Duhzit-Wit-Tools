@@ -33,6 +33,7 @@ v0.1.5 - New UI and combined usage update!
   
 -Batch GLB to VRM conversion
   - Looks for .glbs in sequence(0.glb, 1.glb, 2.glb) in the same folder as the current .blend file and trys to procedurely convert them to VRM(May be buggy)
+  - REQUIRES VRM Addon from https://github.com/saturday06/VRM-Addon-for-Blender
   
 -Social and Support links
 
