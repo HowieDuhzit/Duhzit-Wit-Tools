@@ -11,8 +11,8 @@ bl_info = {
 }
 if "bpy" in locals():
     import importlib
-    if "enum_values" in locals():
-        importlib.reload(enum_values)
+    if "properties" in locals():
+        importlib.reload(properties)
     if "functions" in locals():
         importlib.reload(functions)
     if "operators" in locals():
@@ -20,10 +20,11 @@ if "bpy" in locals():
     if "menues" in locals():
         importlib.reload(menu)
 else:
-    from .enum_values import *
+    from .properties import *
     from .functions import *
     from .operators import *
     from .menu import *
+
 import bpy
 import time
 import requests
@@ -40,6 +41,8 @@ from bpy.types import (
     AddonPreferences,
     PropertyGroup,
     )
+from .icons import initialize_DW_icons
+from .icons import unload_DW_icons
 
 python_exe = os.path.join(sys.prefix, 'bin', 'python.exe')
 target = os.path.join(sys.prefix, 'lib', 'site-packages')
@@ -60,6 +63,7 @@ else:
 from PIL import Image
 
 def register():
+    initialize_DW_icons()
     for (prop_name, prop_value) in PROPS:
         setattr(bpy.types.Scene, prop_name, prop_value)
     
@@ -67,6 +71,7 @@ def register():
         bpy.utils.register_class(klass)
 
 def unregister():
+    unload_DW_icons()
     for (prop_name, _) in PROPS:
         delattr(bpy.types.Scene, prop_name)
 

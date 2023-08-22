@@ -8,7 +8,7 @@ import random
 from math import radians
 from io import BytesIO
 
-from .enum_values import *
+from .properties import *
 from .functions import *
 
 class M2V(bpy.types.Operator):

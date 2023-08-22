@@ -12,19 +12,14 @@ from . import bl_info
 
 from .functions import *
 from .operators import *
-
-is_blender_2_79_or_older = bpy.app.version < (2, 80, 0)
-is_blender_2_80_or_newer = bpy.app.version >= (2, 80, 0)
-is_blender_2_92_or_newer = bpy.app.version >= (2, 92, 0)
-is_blender_3_or_newer = bpy.app.version >= (3, 0, 0)
-
+from .icons import get_icon_id
 
 class RIGToolsPanel(bpy.types.Panel):
     """Creates a Panel in the scene context of the properties editor"""
     bl_label = "RIG Tools"
     bl_idname = "OG_PT_RIG_tools"
     bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI' if is_blender_2_80_or_newer else 'TOOLS'
+    bl_region_type = 'UI'
     bl_category = "DWTOOLS"
 
     def draw(self, context):
@@ -54,7 +49,7 @@ class AIToolsPanel(bpy.types.Panel):
     bl_label = "AI Tools"
     bl_idname = "OG_PT_AI_tools"
     bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI' if is_blender_2_80_or_newer else 'TOOLS'
+    bl_region_type = 'UI'
     bl_category = "DWTOOLS"
 
     def draw(self, context):
@@ -69,7 +64,7 @@ class AIToolsPanel(bpy.types.Panel):
         boxcol.label(text="Generate LoRA training data from Rigged Model")
         boxcol.label(text="Kohya Ready")
         row = boxcol.row()
-        boxcol.prop(scene, "out_path")
+        boxcol.prop(scene, "out_path", icon_value=get_icon_id('download'))
         row = boxcol.row()
         row.prop(scene, "lora_name")
         row = boxcol.row()
@@ -77,14 +72,14 @@ class AIToolsPanel(bpy.types.Panel):
         row = boxcol.row()
         boxcol.prop(scene, "pic_amount")
         row = boxcol.row()
-        row.operator("lora.ren")
+        row.operator("lora.ren", icon_value=get_icon_id('image_search'))
 
 class OBJToolsPanel(bpy.types.Panel):
     """Creates a Panel in the scene context of the properties editor"""
     bl_label = "OBJ Tools"
     bl_idname = "OG_PT_OBJ_tools"
     bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI' if is_blender_2_80_or_newer else 'TOOLS'
+    bl_region_type = 'UI'
     bl_category = "DWTOOLS"
 
     def draw(self, context):
@@ -109,7 +104,7 @@ class CONToolsPanel(bpy.types.Panel):
     bl_label = "Conversion Tools"
     bl_idname = "OG_PT_Convert_tools"
     bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI' if is_blender_2_80_or_newer else 'TOOLS'
+    bl_region_type = 'UI'
     bl_category = "DWTOOLS"
 
     def draw(self, context):
@@ -135,7 +130,7 @@ class CreditsMenu(bpy.types.Panel):
     bl_label = 'Credits'
     bl_idname = 'OG_PT_Credits_Menu'
     bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI' if is_blender_2_80_or_newer else 'TOOLS'
+    bl_region_type = 'UI'
     bl_category = 'DWTOOLS'
 
     def draw(self, context):
@@ -148,8 +143,8 @@ class CreditsMenu(bpy.types.Panel):
         box = m_col.box()
         col = box.column()
         col.scale_y = 1.2
-        col.operator('smc.browser', text='Contact me on Discord (@HowieDuhzit)').link = discord
-        col.operator('smc.browser', text='Report a Bug on GitHub').link = github
+        col.operator('smc.browser', text='Discord', icon_value=get_icon_id('discord')).link = discord
+        col.operator('smc.browser', text='GitHub', icon_value=get_icon_id('github')).link = github
         col.separator()
-        col.operator('smc.browser', text='Support Howie Duhzit on Patreon').link = patreon
-        col.operator('smc.browser', text='Buy Me An Energy Drink').link = buymeacoffee
+        col.operator('smc.browser', text='Support Howie Duhzit on Patreon', icon_value=get_icon_id('patreon')).link = patreon
+        col.operator('smc.browser', text='Buy Me An Energy Drink', icon_value=get_icon_id('bmc')).link = buymeacoffee
