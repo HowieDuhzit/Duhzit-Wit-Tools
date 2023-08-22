@@ -18,12 +18,13 @@ ADDED:
   - Add custom properties to the armature for each bone rotaion in degrees for manual tweaking
 
 -AI LoRA Genorator
-  - Load LoRa_Gen_Scene.blend
+  - Load LoRa_Gen_Scene.blend (https://github.com/HowieDuhzit/Duhzit-Wit-Tools/blob/main/LoRA_Gen_Scene.blend)
   - Load VRM into avatar collection
   - Set background color according to avatar color to contrast
   - Set Output Path for LoRA Data
   - Change Character name and Text for TXT generation
   - Choose amount of pictures to generate(min 15)
+  - Select the armature
   - Render LoRA Data
   - Load Kohya (https://github.com/bmaltais/kohya_ss)
   - Train LoRa
