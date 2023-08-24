@@ -73,6 +73,8 @@ class AIToolsPanel(bpy.types.Panel):
         boxcol.prop(scene, "pic_amount")
         row = boxcol.row()
         row.operator("lora.ren", icon_value=get_icon_id('image_search'))
+        row = boxcol.row()
+        row.operator("lora.tscan", icon_value=get_icon_id('image_search'))
 
 class OBJToolsPanel(bpy.types.Panel):
     """Creates a Panel in the scene context of the properties editor"""
@@ -148,3 +150,51 @@ class CreditsMenu(bpy.types.Panel):
         col.separator()
         col.operator('smc.browser', text='Support Howie Duhzit on Patreon', icon_value=get_icon_id('patreon')).link = patreon
         col.operator('smc.browser', text='Buy Me An Energy Drink', icon_value=get_icon_id('bmc')).link = buymeacoffee
+        
+class IMAGINEPANEL(bpy.types.Panel):
+    bl_label = "Imagine"
+    bl_idname = "IMAGINE_PT_material"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_category = 'material'
+        
+    def draw(self, context):
+        scene = context.scene
+        layout = self.layout
+        col = self.layout.column()
+        box = col.box()
+        boxcol = box.column()
+        boxcol.scale_y = 1.2
+        row = boxcol.row()
+        col = self.layout.column(align = True)
+        row = boxcol.row()
+        row.prop(scene, "tex_width")
+        row.prop(scene, "tex_height")
+        row = layout.row()
+        boxcol.prop(scene, "steps")
+        row = layout.row()        
+        
+        box = col.box()
+        boxcol = box.column()
+        boxcol.scale_y = 1.2
+        row = boxcol.row()
+        col = self.layout.column(align = True)
+        row = boxcol.row()
+        row.prop(scene, "api_path")
+        row = layout.row()
+        box = col.box()
+        boxcol = box.column()
+        boxcol.scale_y = 1.2
+        row = boxcol.row()
+        col = self.layout.column(align = True)
+        row = boxcol.row()
+        row.prop(scene, "img_name")
+        row.prop(scene, "tile")
+        row = boxcol.row()
+        row.prop(scene, "prompt")
+        row = boxcol.row()
+        row.prop(scene, "negprompt")
+        row = boxcol.row()
+        row.prop(scene, "seed")
+        row = boxcol.row()
+        row.operator("imagine.mat")

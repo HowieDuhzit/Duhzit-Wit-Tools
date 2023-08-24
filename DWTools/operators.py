@@ -7,9 +7,19 @@ import os
 import random
 from math import radians
 from io import BytesIO
+from PIL import Image
 
 from .properties import *
 from .functions import *
+
+class Imagine(bpy.types.Operator):
+    """Imagine a material"""
+    bl_idname = "imagine.mat"
+    bl_label = "Imagine A New Material"
+
+    def execute(self, context):
+        imagine(context)
+        return {'FINISHED'}
 
 class M2V(bpy.types.Operator):
 
@@ -54,6 +64,15 @@ class LORA(bpy.types.Operator):
 
     def execute(self, context):
         lora(context)
+        return {'FINISHED'}
+
+class TSCAN(bpy.types.Operator):
+
+    bl_idname = "lora.tscan"
+    bl_label = "Render LoRA Tscan"
+
+    def execute(self, context):
+        tscan(context)
         return {'FINISHED'}
 
 class POSER(bpy.types.Operator):

@@ -6,8 +6,68 @@ import sys
 import os
 import random
 import json
+import base64
+import math
+import shutil
 from math import radians
 from io import BytesIO
+from PIL import Image, ImageChops
+import cv2
+
+def generate_normal_map(input_image, strength=1):
+    width, height = input_image.size
+    normal_map = Image.new('RGB', (width, height), (128, 128, 255))
+    
+    for y in range(height):
+        for x in range(width):
+            # Get grayscale value of the input image
+            center = input_image.getpixel((x, y))[0]
+            
+            # Calculate gradients using surrounding pixels
+            left = input_image.getpixel((x - 1, y))[0] if x > 0 else center
+            right = input_image.getpixel((x + 1, y))[0] if x < width - 1 else center
+            up = input_image.getpixel((x, y - 1))[0] if y > 0 else center
+            down = input_image.getpixel((x, y + 1))[0] if y < height - 1 else center
+            
+            # Calculate normal vectors from gradients
+            dx = (right - left) / 255.0 * strength
+            dy = (down - up) / 255.0 * strength
+            dz = 1.0 / strength
+            
+            # Normalize the vector
+            length = (dx ** 2 + dy ** 2 + dz ** 2) ** 0.5
+            dx /= length
+            dy /= length
+            dz /= length
+            
+            # Map the normal vector to RGB colors
+            red = int((dx + 1) * 0.5 * 255)
+            green = int((dy + 1) * 0.5 * 255)
+            blue = int((dz + 1) * 0.5 * 255)
+            
+            normal_map.putpixel((x, y), (red, green, blue))
+    
+    return normal_map
+def convert_to_displacement_map(diffuse_img):
+    gray_img = cv2.cvtColor(diffuse_img, cv2.COLOR_BGR2GRAY)
+    displacement_map = gray_img.astype(np.float32) / 255.0
+    return displacement_map
+
+def empty_and_remove_folder(folder_path):
+    try:
+        # Delete all files and subfolders within the folder
+        for item in os.listdir(folder_path):
+            item_path = os.path.join(folder_path, item)
+            if os.path.isfile(item_path):
+                os.remove(item_path)
+            elif os.path.isdir(item_path):
+                shutil.rmtree(item_path)
+        
+        # Remove the empty folder
+        os.rmdir(folder_path)
+        print(f"Folder '{folder_path}' has been emptied and removed.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 def mix2vrm(context):
     bpy.ops.object.editmode_toggle()
@@ -298,26 +358,122 @@ def lora(context):
             bone.rotation_euler.y = radians(random_rotation_y)
             bone.rotation_euler.z = radians(random_rotation_z)
  
-        bpy.ops.render.render(use_viewport=True)    
-        bpy.data.images['Render Result'].save_render(str(context.scene.out_path)+"/image/100_"+str(context.scene.lora_name)+"/"+f"{formatted_num}-0-" + str(index) + ".png")
-        filename = str(str(context.scene.out_path)+"/image/100_"+str(context.scene.lora_name)+"/"+f"{formatted_num}-0-" + str(index) + ".txt")
-        with open(filename, 'w') as file:
-            file.write(context.scene.lora_name+" is "+context.scene.lora_text)
+        renderOut(context,formatted_num,index)
+
+def renderOut(context,num,index,angle):
+    bpy.ops.render.render(use_viewport=True)    
+    bpy.data.images['Render Result'].save_render(str(context.scene.out_path)+"/image/100_"+str(context.scene.lora_name)+"/"+f"{num}-0-" + str(index) + ".png")
+    filename = str(str(context.scene.out_path)+"/image/100_"+str(context.scene.lora_name)+"/"+f"{num}-0-" + str(index) + ".txt")
+    with open(filename, 'w') as file:
+        file.write(context.scene.lora_name+" is "+context.scene.lora_text+ " at a "+str(angle)+" degree angle")
+
+def tscan(context):
+    arm = bpy.data.objects.get("Armature")
+    if arm is None:
+        print("Armature not found")
+        return
+    
+    bpy.context.view_layer.objects.active = arm
+    obj = bpy.context.active_object
+    
+    out_path = context.scene.out_path
+    pic_amount = context.scene.pic_amount
+    lora_name = context.scene.lora_name
+    
+    empty_and_remove_folder(out_path)
+    os.makedirs(os.path.join(out_path, "image"))
+    os.makedirs(os.path.join(out_path, "log"))
+    os.makedirs(os.path.join(out_path, "model"))
+    os.makedirs(os.path.join(out_path, f"image/100_{lora_name}"))
+    
+    for index in range(pic_amount):
+        angle_degrees = (index / pic_amount) * 360  # Calculate angle in degrees
+        rounded_angle_degrees = round(angle_degrees)
+        formatted_num = f"{index:04}"
+        
+        print(f"Making Scene angle: {rounded_angle_degrees} degrees")
+        obj.rotation_mode = 'XYZ'
+        obj.rotation_euler.z = math.radians(rounded_angle_degrees)  # Convert to radians
+        
+        renderOut(context, formatted_num, index, rounded_angle_degrees)
+
+def imagine(context):
+    url = "http://"+context.scene.api_path+"/sdapi/v1/txt2img"
+    prompt = context.scene.prompt
+    headers = {
+    "Content-Type": "application/json"
+    }
+    data = {
+    "prompt": context.scene.prompt,
+    "steps": context.scene.steps,
+    "sampler_index": "DPM++ 2M SDE Karras",
+    "tiling": context.scene.tile,
+    "negative_prompt": context.scene.negprompt,
+    "seed": context.scene.seed,
+    "width": context.scene.tex_width,
+    "height": context.scene.tex_height,
+    }
+    for i in bpy.data.images:
+        if i.name == str(context.scene.img_name) +"_diffuse.png":
+            bpy.data.images.remove(i, do_unlink=True)
+        elif i.name == str(context.scene.img_name) +"_normal.png":
+            bpy.data.images.remove(i, do_unlink=True)
+    
+    response = requests.post(url, json=data, headers=headers)
+    r = response.json()
+    
+    for i in r['images']:
+        diffuse_image = Image.open(BytesIO(base64.b64decode(i.split(",",1)[0])))
+        diffuse_image.save("C:/tmp/" + context.scene.img_name + "_diffuse.png", "PNG")
+        input_image = bpy.data.images.load("C:/tmp/" + context.scene.img_name + "_diffuse.png")
+        
+        #normal_map = generate_normal_map(input_image, strength=1)
+        #normal_image = Image.fromarray(normal_map)
+        #normal_map.save("C:/tmp/" + prompt + "_normal.png", "PNG")
+        
+        #displacement_map = convert_to_displacement_map(diffuse_image)
+        #displacement_image = Image.fromarray(displacement_map)
+        #displacement_image.save("C:/tmp/" + prompt + "_displace.png", "PNG")
+        
+    mat = bpy.data.materials.new(name=context.scene.img_name+"_Mat")
+    mat.use_nodes = True
+    nodes = mat.node_tree.nodes
+    links = mat.node_tree.links
+    nodes.new('ShaderNodeTexCoord').name = "coord"
+    nodes.new('ShaderNodeMapping').name = "map"
+    nodes.new('ShaderNodeTexImage').name = "diffuse"
+    nodes.new('ShaderNodeTexImage').name = "normal"
+    nodes.new('ShaderNodeNormalMap').name = "normMap"
+    nodes['diffuse'].image = bpy.data.images[context.scene.img_name+"_diffuse.png"]
+    #nodes['normal'].image = bpy.data.images[prompt+"_normal.png"]
+    links.new(nodes["coord"].outputs[2],nodes["map"].inputs[0])
+    links.new(nodes["map"].outputs[0],nodes["diffuse"].inputs[0])
+    links.new(nodes["map"].outputs[0],nodes["normal"].inputs[0])
+    links.new(nodes["diffuse"].outputs[0],nodes["Principled BSDF"].inputs[0])
+    links.new(nodes["normal"].outputs[0],nodes["normMap"].inputs[1])
+    links.new(nodes["normMap"].outputs[0],nodes["Principled BSDF"].inputs[22])
+    nodes["Principled BSDF"].inputs['Specular'].default_value = 0.2
+    nodes["Principled BSDF"].inputs['Roughness'].default_value = 0.8
+    nodes["Principled BSDF"].inputs['Metallic'].default_value = 0
+   
+    obj = bpy.context.active_object
+    if obj.data.materials:
+        obj.data.materials[0] = mat
+    else:
+        obj.data.materials.append(mat)
+    return {'FINISHED'}
 
 def create_custom_properties_with_drivers():
-    # Get the selected armature
     selected_armature = bpy.context.active_object
 
     if selected_armature and selected_armature.type == 'ARMATURE':
         bpy.ops.object.mode_set(mode='OBJECT')  # Switch to object mode if in edit mode
 
         for bone in selected_armature.data.bones:
-            # Create custom properties
             property_name_x = bone.name + "_X"
             property_name_y = bone.name + "_Y"
             property_name_z = bone.name + "_Z"
 
-            # Check if the custom properties already exist, if yes, remove them
             if property_name_x in selected_armature:
                 del selected_armature[property_name_x]
             if property_name_y in selected_armature:
@@ -325,7 +481,6 @@ def create_custom_properties_with_drivers():
             if property_name_z in selected_armature:
                 del selected_armature[property_name_z]
 
-            # Add the new custom properties
             selected_armature[property_name_x] = 0.0
             selected_armature.id_properties_ui(property_name_x).update(subtype='ANGLE')
             selected_armature[property_name_y] = 0.0
@@ -334,12 +489,10 @@ def create_custom_properties_with_drivers():
             selected_armature.id_properties_ui(property_name_z).update(subtype='ANGLE')
 
 
-        # Add drivers to X, Y, and Z rotation of the bone
         bpy.ops.object.mode_set(mode='POSE')  # Switch to pose mode
 
         for bone in selected_armature.pose.bones:
             bone.rotation_mode = 'XYZ'
-            # Add a driver to the X Euler rotation of the bone
             driver = bone.driver_add('rotation_euler', 0)  # 0 corresponds to X Euler rotation
             driver.driver.type = 'SCRIPTED'
             driver.driver.expression = 'var'
