@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Duhzit Wit Tools",
     "author": "Howie Duhzit",
-    "version": (0, 1, 5),
+    "version": (0, 1, 7),
     "blender": (3, 60, 0),
     "location": "Viewport and Properties",
     "description": "Misc tools for Misc things",
@@ -105,7 +105,6 @@ def register():
     
     for klass in CLASSES:
         bpy.utils.register_class(klass)
-
       
 def unregister():
     unload_DW_icons()
