@@ -198,4 +198,3 @@ class IMAGINEPANEL(bpy.types.Panel):
         row.prop(scene, "seed")
         row = boxcol.row()
         row.operator("imagine.mat")
-        

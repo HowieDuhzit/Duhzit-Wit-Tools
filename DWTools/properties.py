@@ -27,7 +27,6 @@ PROPS = [
     ('img_name', bpy.props.StringProperty(name='Name', default="Image")),
 ]
 
-
 CLASSES = [
     Imagine,
     IMAGINEPANEL,

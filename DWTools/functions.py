@@ -48,6 +48,7 @@ def generate_normal_map(input_image, strength=1):
             normal_map.putpixel((x, y), (red, green, blue))
     
     return normal_map
+
 def convert_to_displacement_map(diffuse_img):
     gray_img = cv2.cvtColor(diffuse_img, cv2.COLOR_BGR2GRAY)
     displacement_map = gray_img.astype(np.float32) / 255.0
